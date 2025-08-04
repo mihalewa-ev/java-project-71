@@ -1,5 +1,6 @@
 plugins {
     id("java")
+    id("application")
     id("com.github.ben-manes.versions") version "0.51.0"  // Укажите версию явно
 }
 
@@ -8,6 +9,10 @@ version = "1.0-SNAPSHOT"
 
 repositories {
     mavenCentral()
+}
+
+application {
+    mainClass.set("hexlet.code.App")
 }
 
 dependencies {
