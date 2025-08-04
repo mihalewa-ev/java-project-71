@@ -11,8 +11,10 @@ repositories {
     mavenCentral()
 }
 
-tasks.compileJava {
-    options.release.set(20)
+java {
+    toolchain {
+        languageVersion.set(JavaLanguageVersion.of(20))
+    }
 }
 
 application {
@@ -39,12 +41,23 @@ tasks.test {
     useJUnitPlatform()
 }
 
-tasks.jacocoTestReport {
+tasks.test {
+    useJUnitPlatform()
+    finalizedBy(tasks.withType<JacocoReport>())
+}
+
+tasks.withType<JacocoReport> {
+    dependsOn(tasks.test) // Зависит от задачи test
     reports {
         xml.required.set(true)
+        html.required.set(true)
+        html.outputLocation.set(layout.buildDirectory.dir("reports/jacoco/html"))
     }
 }
 
-tasks.run {
+// Правильный способ установки стандартного ввода в Kotlin DSL
+tasks.named<JavaExec>("run") {
     standardInput = System.`in`
 }
+
+private fun TaskContainer.jacocoTestReport(function: Any) {}
