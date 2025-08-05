@@ -1,44 +1,51 @@
 package hexlet.code;
 
+import hexlet.code.formatters.Formatter;
+
 import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.Paths;
-import java.util.List;
+
 import java.util.Map;
+import java.util.Objects;
+import java.util.TreeMap;
 
 public class Differ {
+    /**
+     * Метод сравнивает два файла и генерирует на их основе строку в выбранном/поддерживаемом формате.
+     *
+     * @param path1 путь до первого файла
+     * @param path2 путь до второго файла
+     * @param format формат текста, который должен быть на выходе метода
+     * @return сгенерированная строка
+     * @throws IOException при проблеме с чтением файла
+     */
+    public static String generate(String path1, String path2, String format) throws IOException {
+        Map<String, Object> data1 = Parser.parseInMap(path1);
+        Map<String, Object> data2 = Parser.parseInMap(path2);
 
-    public static String generate(String filePath1, String filePath2) throws IOException {
-        return generate(filePath1, filePath2, "stylish");
+        TreeMap<String, Node> differences = new TreeMap<>();
+
+        data1.forEach((key, value) -> {
+            if (data2.containsKey(key)) {
+                if (!Objects.equals(value, data2.get(key))) {
+                    differences.put(key, new Node(OperationType.UPDATED, value, data2.get(key)));
+                } else {
+                    differences.put(key, new Node(OperationType.UNCHANGED, value, value));
+                }
+            } else {
+                differences.put(key, new Node(OperationType.DELETED, value, null));
+            }
+        });
+
+        data2.forEach((key, value) -> {
+            if (!data1.containsKey(key)) {
+                differences.put(key, new Node(OperationType.ADDED, null, value));
+            }
+        });
+
+        return Formatter.format(differences, format);
     }
 
-    public static String generate(String filePath1, String filePath2, String formatName) throws IOException {
-        String file1Format = getFileFormat(filePath1);
-        String file2Format = getFileFormat(filePath2);
-
-        String file1Content = getContent(filePath1);
-        String file2Content = getContent(filePath2);
-
-        Map<String, Object> parsedFile1 = Parser.parse(file1Content, file1Format);
-        Map<String, Object> parsedFile2 = Parser.parse(file2Content, file2Format);
-
-        List<Map<String, Object>> diffList = FindDiff.getDiff(parsedFile1, parsedFile2);
-
-        return Formatter.constructFormatFromMap(diffList, formatName);
-    }
-
-    private static String getFileFormat(String filePath) {
-        int dotIndex = filePath.lastIndexOf(".");
-
-        return dotIndex > 0 ? filePath.substring(dotIndex + 1) : "";
-    }
-
-    private static Path getAbsolutePath(String filePath) {
-        return Paths.get(filePath).toAbsolutePath().normalize();
-    }
-
-    private static String getContent(String filePath) throws IOException {
-        return Files.readString(getAbsolutePath(filePath));
+    public static String generate(String path1, String path2) throws IOException {
+        return generate(path1, path2, "stylish");
     }
 }
