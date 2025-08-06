@@ -1,12 +1,13 @@
 package hexlet.code;
 
-import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.AllArgsConstructor;
 
-@Getter
 @AllArgsConstructor
-public class Node {
-    private OperationType type;
+@Getter
+public class Dif {
+    private DifOperation operation;
+    private String key;
     private Object oldValue;
     private Object newValue;
 }

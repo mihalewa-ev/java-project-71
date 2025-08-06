@@ -33,5 +33,3 @@ run-dist-json-plain:
 
 run-dist-json-json:
 	make -C app run-dist-json-json
-
-.PHONY: build

@@ -1,29 +1,27 @@
 package hexlet.code;
 
-import lombok.Getter;
 import picocli.CommandLine;
 import picocli.CommandLine.Command;
-import picocli.CommandLine.Parameters;
 import picocli.CommandLine.Option;
-
-import java.io.IOException;
+import picocli.CommandLine.Parameters;
 import java.util.concurrent.Callable;
+import lombok.Getter;
+import lombok.Setter;
 
-@Command(name = "gendiff",
-        mixinStandardHelpOptions = true,
-        version = "gendiff 1.0",
-        description = "Compares two configuration files and shows a difference.")
 @Getter
+@Setter
+@Command(name = "gendiff", version = "gendiff 1.0", mixinStandardHelpOptions = true)
 public final class App implements Callable<Integer> {
-    @Parameters(paramLabel = "filePath1", description = "path to first file")
-    private String filePath1;
 
-    @Parameters(paramLabel = "filePath2", description = "path to second file")
-    private String filePath2;
-
-    @Option(names = { "-f", "--format" }, defaultValue = "stylish", paramLabel = "format",
+    @Option(names = {"-f", "--format"}, paramLabel = "format", defaultValue = "stylish",
             description = "output format [default: ${DEFAULT-VALUE}]")
     private String format;
+
+    @Parameters(paramLabel = "filepath1", description = "path to first file")
+    private String filepath1;
+
+    @Parameters(paramLabel = "filepath2", description = "path to second file")
+    private String filepath2;
 
     public static void main(String[] args) {
         int exitCode = new CommandLine(new App()).execute(args);
@@ -33,12 +31,11 @@ public final class App implements Callable<Integer> {
     @Override
     public Integer call() {
         try {
-            String difference = Differ.generate(filePath1, filePath2, format);
-            System.out.println(difference);
-        } catch (IOException | IllegalArgumentException e) {
-            System.out.println("Error: " + e);
+            System.out.println(Differ.generate(filepath1, filepath2, format));
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+            return 1;
         }
-
         return 0;
     }
 }

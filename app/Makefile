@@ -1,4 +1,11 @@
+# Makefile
 .DEFAULT_GOAL := build-run
+
+run-dist: #  Запуск исполняемого файла
+	./build/install/app/bin/app 'src/test/resources/file1.json' 'src/test/resources/file2.json'
+
+setup:
+	./gradlew wrapper --gradle-version 8.5
 
 clean:
 	./gradlew clean
@@ -6,8 +13,8 @@ clean:
 build:
 	./gradlew clean build
 
-install-dist:
-	./gradlew clean installDist
+install:
+	./gradlew clean install
 
 run:
 	./gradlew run
@@ -16,25 +23,15 @@ test:
 	./gradlew test
 
 report:
-	./gradlew test
 	./gradlew jacocoTestReport
 
 lint:
 	./gradlew checkstyleMain checkstyleTest
 
-checkstyle:
-	./gradlew checkstyleMain
+check-deps:
+	./gradlew dependencyUpdates -Drevision=release
 
-run-dist-json-stylish:
-	./gradlew installDist
-	./build/install/app/bin/app src/test/resources/fixtures/file1.json src/test/resources/fixtures/file2.json
 
-run-dist-json-plain:
-	./gradlew installDist
-	./build/install/app/bin/app -f plain src/test/resources/fixtures/file1.json src/test/resources/fixtures/file2.json
-
-run-dist-json-json:
-	./gradlew installDist
-	./build/install/app/bin/app -f json src/test/resources/fixtures/file1.json src/test/resources/fixtures/file2.json
+build-run: build run
 
 .PHONY: build

@@ -1,12 +1,12 @@
 plugins {
-    id("java")
-    id("io.freefair.lombok") version "8.4"
     application
+    id("se.patrikerdes.use-latest-versions") version "0.2.18"
+    id("com.github.ben-manes.versions") version "0.52.0"
     checkstyle
     jacoco
+    id("org.sonarqube") version "6.0.1.5171"
+    id("io.freefair.lombok") version "8.13.1"
 }
-
-application { mainClass.set("hexlet.code.App") }
 
 group = "hexlet.code"
 version = "1.0-SNAPSHOT"
@@ -16,17 +16,20 @@ repositories {
 }
 
 dependencies {
-    testImplementation(platform("org.junit:junit-bom:5.10.0"))
+    implementation("info.picocli:picocli:4.7.7")
+    implementation("com.fasterxml.jackson.core:jackson-databind:2.18.3")
+    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.18.3")
+    implementation("org.apache.commons:commons-lang3:3.17.0")
+    compileOnly("org.projectlombok:lombok:1.18.38")
+    annotationProcessor("org.projectlombok:lombok:1.18.38")
+    testImplementation(platform("org.junit:junit-bom:5.12.2"))
     testImplementation("org.junit.jupiter:junit-jupiter")
+    testImplementation("org.junit.jupiter:junit-jupiter-params:5.12.2")
+    testRuntimeOnly("org.junit.platform:junit-platform-launcher:1.12.2")
+}
 
-    implementation("org.apache.commons:commons-lang3:3.12.0")
-    implementation("org.apache.commons:commons-collections4:4.4")
-
-    implementation("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.16.1")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.17.0")
-
-    implementation("info.picocli:picocli:4.7.6")
-    annotationProcessor("info.picocli:picocli-codegen:4.1.4")
+application {
+    mainClass = "hexlet.code.App"
 }
 
 tasks.test {
@@ -34,3 +37,15 @@ tasks.test {
 }
 
 tasks.jacocoTestReport { reports { xml.required.set(true) } }
+
+checkstyle {
+    toolVersion = "10.21.4"
+}
+
+sonar {
+    properties {
+        property("sonar.projectKey", "wasiliyterkin46_java-project-71")
+        property("sonar.organization", "wasiliyterkin46")
+        property("sonar.host.url", "https://sonarcloud.io")
+    }
+}
