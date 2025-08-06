@@ -14,18 +14,18 @@ Actions Status Java CI Quality Gate Status Coverage
 
 Start
 make
+
 Setup
 make build
+
 Run
 make run
+
 Run tests
 make test
+
 Run checkstyle
 make lint
-Example of using the yaml input format:
-https://asciinema.org/a/QfHITuOsLn2jI7XtdNw7ilbfQ
-Example of using the json input format:
-https://asciinema.org/a/GituCRHPCQZWSIs14DDLkbWXi
 
 
 #### Demo-version
